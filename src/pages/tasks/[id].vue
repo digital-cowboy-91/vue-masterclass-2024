@@ -6,7 +6,7 @@ const route = useRoute()
 
 <template>
   <div>
-    <h1>Project Name {{ route.params.id }}</h1>
+    <h1>Task ID {{ route.params.id }}</h1>
   </div>
 </template>
 

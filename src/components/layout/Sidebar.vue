@@ -15,7 +15,7 @@ const links = [
     icon: 'lucide:building-2',
   },
   {
-    title: 'Taska',
+    title: 'Tasks',
     to: '/tasks',
     icon: 'lucide:badge-check',
   },
