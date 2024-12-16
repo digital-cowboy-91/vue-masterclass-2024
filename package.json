@@ -12,8 +12,9 @@
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
     "db:migrate:new": "npx supabase migrations new",
-    "db:reset": "npx supabase db reset --linked && npm run db:seed",
-    "db:seed": "node --env-file=.env.local supabase/seed.js"
+    "db:reset": "npx supabase db reset --linked && npm run db:seed && npm run db:gen-types",
+    "db:seed": "node --env-file=.env.local supabase/seed.js",
+    "db:gen-types": "npx supabase gen types typescript --linked --schema public > supabase/types.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.47.8",
