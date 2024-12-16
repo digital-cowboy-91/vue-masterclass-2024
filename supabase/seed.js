@@ -19,37 +19,66 @@ const logErr = (tableName, error) => {
   process.exit(1)
 }
 
-//  table projects
-const seedProjects = async (iterations) => {
-  const TABLE_NAME = 'projects'
+const seedWrapper = async (tableName, callback) => {
+  logStep(`Seeding ${tableName}...`)
 
-  logStep(`Seeding ${TABLE_NAME}...`)
+  const { data, error } = await callback()
 
-  const mockData = []
+  if (error) return logErr(tableName, error)
 
-  for (let i = 0; i < iterations; i++) {
-    const name = faker.lorem.words(3)
-
-    mockData.push({
-      name,
-      slug: name.toLocaleLowerCase().replace(/\s/g, '-'),
-      status: faker.helpers.arrayElement(['in-progress', 'completed']),
-      collaborators: faker.helpers.arrayElements([1, 2, 3]),
-    })
-  }
-
-  const { data, error } = await supabase.from(TABLE_NAME).insert(mockData).select()
-
-  if (error) return logErr(TABLE_NAME, error)
-
-  logStep(`Seeding ${TABLE_NAME} successful`)
+  logStep(`Seeding ${tableName} successful`)
 
   return data
 }
 
+//  table projects
+const seedProjects = async (iterations) => {
+  const tableName = 'projects'
+
+  return seedWrapper(tableName, async () => {
+    const mockData = []
+
+    for (let i = 0; i < iterations; i++) {
+      const name = faker.lorem.words(3)
+
+      mockData.push({
+        name,
+        slug: name.toLocaleLowerCase().replace(/\s/g, '-'),
+        status: faker.helpers.arrayElement(['in-progress', 'completed']),
+        collaborators: faker.helpers.arrayElements([1, 2, 3]),
+      })
+    }
+
+    return supabase.from(tableName).insert(mockData).select()
+  })
+}
+
+// table tasks
+const seedTasks = async (iterations, projectIds) => {
+  const tableName = 'tasks'
+
+  return seedWrapper(tableName, async () => {
+    const mockData = []
+
+    for (let i = 0; i < iterations; i++) {
+      mockData.push({
+        name: faker.lorem.words(3),
+        status: faker.helpers.arrayElement(['in-progress', 'completed']),
+        description: faker.lorem.paragraph(),
+        due_date: faker.date.future(),
+        project_id: faker.helpers.arrayElement(projectIds),
+        collaborators: faker.helpers.arrayElements([1, 2, 3]),
+      })
+    }
+
+    return supabase.from('tasks').insert(mockData).select('id')
+  })
+}
+
 // seed database
 const seedDb = async () => {
-  await seedProjects(10)
+  const projectIds = await seedProjects(10).then((data) => data.map((item) => item.id))
+  await seedTasks(10, projectIds)
 }
 
 seedDb()
