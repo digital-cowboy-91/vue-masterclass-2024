@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DataTable from '@/components/ui/data-table/DataTable.vue'
 import { type Projects, projectsQuery } from '@/lib/dbQueries'
-import { columns } from '@/lib/tableColumns/tasksColumns'
+import { columns } from '@/lib/tableColumns/projectsColumns'
 import { usePageStore } from '@/stores/page'
 import { ref } from 'vue'
 

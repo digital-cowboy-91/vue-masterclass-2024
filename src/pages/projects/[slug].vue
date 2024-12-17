@@ -16,6 +16,14 @@ import { useRoute } from 'vue-router'
 const route = useRoute('/projects/[slug]')
 const singleProject = ref<SingleProject | null>(null)
 
+watch(
+  () => singleProject.value?.name,
+  () => {
+    usePageStore().pageData.title = `Project: ${singleProject.value?.name || ''}`
+  },
+  { immediate: true },
+)
+
 const getSingleProject = async () => {
   const { data, error } = await singleProjectQuery(route.params.slug)
 
@@ -25,14 +33,6 @@ const getSingleProject = async () => {
 }
 
 await getSingleProject()
-
-watch(
-  () => singleProject.value?.name,
-  () => {
-    usePageStore().pageData.title = `Project: ${singleProject.value?.name || ''}`
-  },
-  { immediate: true },
-)
 </script>
 
 <template>
