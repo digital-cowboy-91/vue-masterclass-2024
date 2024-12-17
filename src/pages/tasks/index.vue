@@ -5,17 +5,21 @@ import type { ColumnDef } from '@tanstack/vue-table'
 import { h, ref } from 'vue'
 import type { Tables } from '../../../supabase/types'
 import { RouterLink } from 'vue-router'
+import { usePageStore } from '@/stores/page'
+
+usePageStore().pageData.title = 'Tasks'
 
 const tasks = ref<Tables<'tasks'>[] | null>(null)
 
-// IIFE => immediately invoked function expression ;(()=>{})()
-;(async () => {
+const getTasks = async () => {
   const { data, error } = await supabase.from('tasks').select()
 
   if (error) console.error(error)
 
   tasks.value = data
-})()
+}
+
+await getTasks()
 
 const columns: ColumnDef<Tables<'tasks'>>[] = [
   {
