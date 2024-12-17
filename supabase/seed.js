@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import { fakerEN_GB as faker } from '@faker-js/faker'
+import { createClient } from '@supabase/supabase-js'
 
 // init supabase instance
 const supabaseUrl = process.env.VITE_SUPABASE_URL
@@ -44,6 +44,7 @@ const seedProjects = async (iterations) => {
       mockData.push({
         name,
         slug: name.toLocaleLowerCase().replace(/\s/g, '-'),
+        description: faker.lorem.paragraphs({ min: 0, max: 3 }),
         status: faker.helpers.arrayElement(['in-progress', 'completed']),
         collaborators: faker.helpers.arrayElements([1, 2, 3]),
       })

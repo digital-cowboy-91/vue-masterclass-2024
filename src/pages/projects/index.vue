@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import DataTable from '@/components/ui/data-table/DataTable.vue'
-import { type ProjectsQuery, projectsQuery } from '@/lib/dbQueries'
+import { type Projects, projectsQuery } from '@/lib/dbQueries'
 import { columns } from '@/lib/tableColumns/tasksColumns'
 import { usePageStore } from '@/stores/page'
 import { ref } from 'vue'
 
 usePageStore().pageData.title = 'Projects'
 
-const projects = ref<ProjectsQuery | null>(null)
+const projects = ref<Projects | null>(null)
 
 const getProjects = async () => {
-  const { data, error } = await projectsQuery
+  const { data, error } = await projectsQuery()
 
   if (error) console.error(error)
 

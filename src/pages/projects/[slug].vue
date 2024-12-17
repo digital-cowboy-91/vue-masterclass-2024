@@ -1,13 +1,132 @@
 <script setup lang="ts">
+import Avatar from '@/components/ui/avatar/Avatar.vue'
+import AvatarFallback from '@/components/ui/avatar/AvatarFallback.vue'
+import AvatarImage from '@/components/ui/avatar/AvatarImage.vue'
+import Table from '@/components/ui/table/Table.vue'
+import TableBody from '@/components/ui/table/TableBody.vue'
+import TableCell from '@/components/ui/table/TableCell.vue'
+import TableHead from '@/components/ui/table/TableHead.vue'
+import TableHeader from '@/components/ui/table/TableHeader.vue'
+import TableRow from '@/components/ui/table/TableRow.vue'
+import { singleProjectQuery, type SingleProject } from '@/lib/dbQueries'
+import { usePageStore } from '@/stores/page'
+import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-const route = useRoute()
+const route = useRoute('/projects/[slug]')
+const singleProject = ref<SingleProject | null>(null)
+
+const getSingleProject = async () => {
+  const { data, error } = await singleProjectQuery(route.params.slug)
+
+  if (error) console.error(error)
+
+  singleProject.value = data
+}
+
+await getSingleProject()
+
+watch(
+  () => singleProject.value?.name,
+  () => {
+    usePageStore().pageData.title = `Project: ${singleProject.value?.name || ''}`
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
-  <div>
-    <h1>Project Name {{ route.params.slug }}</h1>
-  </div>
+  <Table v-if="singleProject">
+    <TableRow>
+      <TableHead> Name </TableHead>
+      <TableCell> {{ singleProject.name }} </TableCell>
+    </TableRow>
+    <TableRow>
+      <TableHead> Description </TableHead>
+      <TableCell>
+        {{ singleProject.description }}
+      </TableCell>
+    </TableRow>
+    <TableRow>
+      <TableHead> Status </TableHead>
+      <TableCell>{{ singleProject.status }}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableHead> Collaborators </TableHead>
+      <TableCell>
+        <div class="flex">
+          <Avatar
+            class="-mr-4 border border-primary hover:scale-110 transition-transform"
+            v-for="collaborator in singleProject.collaborators"
+            :key="collaborator"
+          >
+            <RouterLink class="w-full h-full flex items-center justify-center" to="">
+              <AvatarImage src="" alt="" />
+              <AvatarFallback></AvatarFallback>
+            </RouterLink>
+          </Avatar>
+        </div>
+      </TableCell>
+    </TableRow>
+  </Table>
+
+  <section v-if="singleProject" class="mt-10 flex flex-col md:flex-row gap-5 justify-between grow">
+    <div class="flex-1">
+      <h2>Tasks</h2>
+      <div class="table-container">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead> Name </TableHead>
+              <TableHead> Status </TableHead>
+              <TableHead> Due Date </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow v-for="task in singleProject.tasks" :key="task.id">
+              <TableCell> {{ task.name }} </TableCell>
+              <TableCell> {{ task.status }} </TableCell>
+              <TableCell> {{ task.due_date }} </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+    <div class="flex-1">
+      <h2>Documents</h2>
+      <div class="table-container">
+        <p class="text-muted-foreground text-sm font-semibold px-4 py-3">
+          This project doesn't have documents yet...
+        </p>
+        <!-- <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead> Name </TableHead>
+              <TableHead> Visibility </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell> Lorem ipsum dolor sit amet. </TableCell>
+              <TableCell> Private </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table> -->
+      </div>
+    </div>
+  </section>
 </template>
 
-<style scoped></style>
+<style>
+th {
+  @apply w-[100px];
+}
+
+h2 {
+  @apply mb-4 text-lg font-semibold w-fit;
+}
+
+.table-container {
+  @apply overflow-hidden overflow-y-auto rounded-md h-80;
+}
+</style>
