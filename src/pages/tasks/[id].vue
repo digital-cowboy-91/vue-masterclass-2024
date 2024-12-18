@@ -8,7 +8,8 @@ import TableCell from '@/components/ui/table/TableCell.vue'
 import TableHead from '@/components/ui/table/TableHead.vue'
 import TableRow from '@/components/ui/table/TableRow.vue'
 import { singleTaskQuery, type SingleTask } from '@/lib/dbQueries'
-import { usePageStore } from '@/stores/page'
+import { useErrorStore } from '@/stores/useErrorStore'
+import { usePageStore } from '@/stores/usePageStore'
 import { Icon } from '@iconify/vue/dist/iconify.js'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -25,9 +26,9 @@ watch(
 )
 
 const getTasks = async () => {
-  const { data, error } = await singleTaskQuery(route.params.id)
+  const { data, error, status } = await singleTaskQuery(route.params.id)
 
-  if (error) console.error(error)
+  if (error) useErrorStore().setError({ status, error })
 
   singleTask.value = data
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Sidebar from '@/components/layout/Sidebar.vue'
 import TopNavbar from '@/components/layout/TopNavbar.vue'
-import { usePageStore } from '@/stores/page'
+import { usePageStore } from '@/stores/usePageStore'
 import { storeToRefs } from 'pinia'
 
 const { pageData } = storeToRefs(usePageStore())

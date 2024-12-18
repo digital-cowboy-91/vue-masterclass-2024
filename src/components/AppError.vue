@@ -1,24 +1,27 @@
 <script setup lang="ts">
-import { useErrorStore } from '@/stores/error'
+import { useErrorStore } from '@/stores/useErrorStore'
 import { Icon } from '@iconify/vue/dist/iconify.js'
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import Button from '../ui/button/Button.vue'
+import Button from './ui/button/Button.vue'
+
+const errorStore = useErrorStore()
+const { resetError } = errorStore
+const { activeError } = storeToRefs(errorStore)
+const $: any = activeError ?? {}
 
 const router = useRouter()
-const errorStore = useErrorStore()
-const { activeError } = errorStore
-
-router.afterEach(() => {
-  errorStore.activeError = null
-})
+router.afterEach(() => resetError())
 </script>
 
 <template>
-  <section class="error">
+  <section v-if="$" class="error">
     <div>
       <Icon icon="lucide:triangle-alert" class="error__icon" />
-      <h1 class="error__code">{{ activeError?.code }}</h1>
-      <p class="error__msg">{{ activeError?.message }}</p>
+      <h1 class="error__code">{{ $.code ? `${$.status} / ${$.code}` : $.status }}</h1>
+      <p class="error__msg">{{ $.message }}</p>
+      <p v-if="$.hint">{{ $.hint }}</p>
+      <p v-if="$.details">{{ $.details }}</p>
       <div class="error-footer">
         <p class="error-footer__text">You'll find lots to explore on the home page.</p>
         <RouterLink to="/">

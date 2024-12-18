@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useErrorStore } from '@/stores/error'
+import { useErrorStore } from '@/stores/useErrorStore'
 
 useErrorStore().setError({
-  code: 404,
-  msg: 'Page not found',
+  status: 404,
+  error: 'Page not found',
 })
 </script>

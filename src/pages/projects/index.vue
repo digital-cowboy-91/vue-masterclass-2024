@@ -2,7 +2,8 @@
 import DataTable from '@/components/ui/data-table/DataTable.vue'
 import { type Projects, projectsQuery } from '@/lib/dbQueries'
 import { columns } from '@/lib/tableColumns/projectsColumns'
-import { usePageStore } from '@/stores/page'
+import { useErrorStore } from '@/stores/useErrorStore'
+import { usePageStore } from '@/stores/usePageStore'
 import { ref } from 'vue'
 
 usePageStore().pageData.title = 'Projects'
@@ -10,9 +11,9 @@ usePageStore().pageData.title = 'Projects'
 const projects = ref<Projects | null>(null)
 
 const getProjects = async () => {
-  const { data, error } = await projectsQuery()
+  const { data, error, status } = await projectsQuery()
 
-  if (error) console.error(error)
+  if (error) useErrorStore().setError({ status, error })
 
   projects.value = data
 }

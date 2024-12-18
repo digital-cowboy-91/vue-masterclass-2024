@@ -9,7 +9,8 @@ import TableHead from '@/components/ui/table/TableHead.vue'
 import TableHeader from '@/components/ui/table/TableHeader.vue'
 import TableRow from '@/components/ui/table/TableRow.vue'
 import { singleProjectQuery, type SingleProject } from '@/lib/dbQueries'
-import { usePageStore } from '@/stores/page'
+import { useErrorStore } from '@/stores/useErrorStore'
+import { usePageStore } from '@/stores/usePageStore'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -25,9 +26,9 @@ watch(
 )
 
 const getSingleProject = async () => {
-  const { data, error } = await singleProjectQuery(route.params.slug)
+  const { data, error, status } = await singleProjectQuery(route.params.slug)
 
-  if (error) console.error(error)
+  if (error) useErrorStore().setError({ status, error })
 
   singleProject.value = data
 }
