@@ -5,17 +5,17 @@ import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import Button from './ui/button/Button.vue'
 
-const errorStore = useErrorStore()
-const { resetError } = errorStore
-const { activeError } = storeToRefs(errorStore)
-const $: any = activeError ?? {}
+const store = useErrorStore()
+const { resetError } = store
+const { activeError } = storeToRefs(store)
+const $: any = activeError!
 
 const router = useRouter()
 router.afterEach(() => resetError())
 </script>
 
 <template>
-  <section v-if="$" class="error">
+  <section class="error">
     <div>
       <Icon icon="lucide:triangle-alert" class="error__icon" />
       <h1 class="error__code">{{ $.code ? `${$.status} / ${$.code}` : $.status }}</h1>
