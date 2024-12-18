@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AuthLayout from '@/components/layout/main/AuthLayout.vue'
 import { onErrorCaptured } from 'vue'
-import AppError from './components/AppError.vue'
+import AppError from './components/errors/AppError.vue'
 import { useErrorStore } from './stores/useErrorStore'
 
 const store = useErrorStore()
