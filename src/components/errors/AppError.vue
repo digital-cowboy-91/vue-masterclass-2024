@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useErrorStore } from '@/stores/useErrorStore'
 import { storeToRefs } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
-import DevError from './DevError.vue'
-import ProdError from './ProdError.vue'
+
+const ErrorTemplate = defineAsyncComponent(() =>
+  import.meta.env.DEV ? import('./DevError.vue') : import('./ProdError.vue'),
+)
 
 const errorStore = useErrorStore()
 const { resetError } = errorStore
@@ -15,8 +18,7 @@ router.afterEach(() => resetError())
 
 <template>
   <section class="error">
-    <DevError :error-data="activeError!" />
-    <ProdError :error-data="activeError!" />
+    <ErrorTemplate :error-data="activeError!" />
   </section>
 </template>
 
