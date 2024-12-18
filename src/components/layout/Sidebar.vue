@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import SidebarLinks from './SidebarLinks.vue'
 import Button from '../ui/button/Button.vue'
+import SidebarLinks from './SidebarLinks.vue'
 
 const links = [
   {
@@ -34,7 +34,11 @@ const accountLinks = [
   },
   {
     title: 'Sign Out',
-    to: '/signout',
+    onClick: async () => {
+      const { logout } = await import('@/utils/dbAuth')
+
+      logout()
+    },
     icon: 'lucide:log-out',
   },
 ]

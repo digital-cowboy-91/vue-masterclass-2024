@@ -6,4 +6,9 @@ const router = createRouter({
   routes,
 })
 
+router.beforeEach(async () => {
+  const { getSession } = await import('@/utils/dbAuth')
+  await getSession()
+})
+
 export default router

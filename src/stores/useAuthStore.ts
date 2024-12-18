@@ -12,8 +12,6 @@ export const useAuthStore = defineStore('auth-store', () => {
   const setProfile = async (userId: string) => {
     const { data, error } = await profileQuery(userId)
 
-    console.log({ data, error })
-
     profile.value = error ? null : data
   }
 

@@ -18,8 +18,6 @@ export const useErrorStore = defineStore('error-store', () => {
     instance.status = status
 
     activeError.value = instance as CustomError
-
-    console.log(activeError.value)
   }
 
   const resetError = () => (activeError.value = null)
