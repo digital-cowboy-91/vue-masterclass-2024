@@ -1,5 +1,5 @@
 import { profileQuery } from '@/utils/dbQueries'
-import { handleHMR } from '@/utils/handleHMR'
+import { supabase } from '@/utils/supabaseClient'
 import type { Session, User } from '@supabase/supabase-js'
 import { defineStore } from 'pinia'
 import type { Tables } from 'supabase/types'
@@ -8,6 +8,7 @@ import { computed, ref } from 'vue'
 export const useAuthStore = defineStore('auth-store', () => {
   const user = ref<null | User>(null)
   const profile = ref<null | Tables<'profiles'>>(null)
+  const isTracking = ref(false)
 
   const setProfile = async (userId: string) => {
     const { data, error } = await profileQuery(userId)
@@ -28,11 +29,22 @@ export const useAuthStore = defineStore('auth-store', () => {
     await setProfile(userSession.user.id)
   }
 
+  const subscribeToAuth = async () => {
+    if (isTracking.value) return
+
+    supabase.auth.onAuthStateChange((event, session) => {
+      setTimeout(async () => {
+        await setAuth(session)
+      }, 0)
+    })
+
+    isTracking.value = true
+  }
+
   return {
     user: computed(() => user.value),
     profile: computed(() => profile.value),
     setAuth,
+    subscribeToAuth,
   }
 })
-
-handleHMR(useAuthStore)
