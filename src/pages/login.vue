@@ -4,11 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Input from '@/components/ui/input/Input.vue'
 import Label from '@/components/ui/label/Label.vue'
 import Separator from '@/components/ui/separator/Separator.vue'
+import { useFormErrors } from '@/composables/formErrors'
 import { login } from '@/utils/dbAuth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const { serverError, handleServerError } = useFormErrors()
 
 const formData = ref({
   email: '',
@@ -16,8 +18,14 @@ const formData = ref({
 })
 
 const signin = async () => {
-  const success = await login(formData.value)
-  if (success) router.push('/')
+  const { error } = await login(formData.value)
+
+  if (error) {
+    handleServerError(error)
+    return
+  }
+
+  router.push('/')
 }
 </script>
 
@@ -56,6 +64,9 @@ const signin = async () => {
               required
               v-model="formData.password"
             />
+          </div>
+          <div v-if="serverError" class="text-sm text-left text-red-500">
+            Incorrect email or password
           </div>
           <Button type="submit" class="w-full"> Login </Button>
         </form>

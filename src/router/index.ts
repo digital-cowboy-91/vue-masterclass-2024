@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/stores/useAuthStore'
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import { routes } from 'vue-router/auto-routes'
 
@@ -6,9 +7,23 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async () => {
-  const { getSession } = await import('@/utils/dbAuth')
-  await getSession()
+router.beforeEach(async (to, from) => {
+  const store = useAuthStore()
+  await store.currentSession()
+
+  const isAuthOnAuthPage = ['/login', '/register'].includes(to.path)
+
+  if (!store.user && !isAuthOnAuthPage) {
+    return {
+      name: '/login',
+    }
+  }
+
+  if (store.user && isAuthOnAuthPage) {
+    return {
+      name: '/',
+    }
+  }
 })
 
 export default router

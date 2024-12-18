@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
+import { useRouter } from 'vue-router'
 import Button from '../ui/button/Button.vue'
 import SidebarLinks from './SidebarLinks.vue'
+
+const router = useRouter()
 
 const links = [
   {
@@ -37,7 +40,9 @@ const accountLinks = [
     onClick: async () => {
       const { logout } = await import('@/utils/dbAuth')
 
-      logout()
+      const success = await logout()
+
+      if (success) router.push('/login')
     },
     icon: 'lucide:log-out',
   },

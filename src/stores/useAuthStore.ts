@@ -1,3 +1,4 @@
+import { getSession } from '@/utils/dbAuth'
 import { profileQuery } from '@/utils/dbQueries'
 import { supabase } from '@/utils/supabaseClient'
 import type { Session, User } from '@supabase/supabase-js'
@@ -29,10 +30,15 @@ export const useAuthStore = defineStore('auth-store', () => {
     await setProfile(userSession.user.id)
   }
 
+  const currentSession = async () => {
+    const session = await getSession()
+    await setAuth(session ? session : null)
+  }
+
   const subscribeToAuth = async () => {
     if (isTracking.value) return
 
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange((_event, session) => {
       setTimeout(async () => {
         await setAuth(session)
       }, 0)
@@ -45,6 +51,7 @@ export const useAuthStore = defineStore('auth-store', () => {
     user: computed(() => user.value),
     profile: computed(() => profile.value),
     setAuth,
+    currentSession,
     subscribeToAuth,
   }
 })
