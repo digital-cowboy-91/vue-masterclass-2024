@@ -12,7 +12,7 @@ export const useAuthStore = defineStore('auth-store', () => {
   const isTracking = ref(false)
 
   const setProfile = async (userId: string) => {
-    const { data, error } = await profileQuery(userId)
+    const { data, error } = await profileQuery('id', userId)
 
     profile.value = error ? null : data
   }

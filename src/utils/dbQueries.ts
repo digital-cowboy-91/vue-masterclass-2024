@@ -1,4 +1,5 @@
 import type { QueryData } from '@supabase/supabase-js'
+import type { Tables } from 'supabase/types'
 import { supabase } from './supabaseClient'
 
 export const tasksQuery = () =>
@@ -53,5 +54,10 @@ export const singleTaskQuery = (id: string) =>
     .single()
 export type SingleTask = QueryData<ReturnType<typeof singleTaskQuery>>
 
-export const profileQuery = (id: string) => supabase.from('profiles').select().eq('id', id).single()
+type ProfileKey = keyof Tables<'profiles'>
+type ProfileArgs<T extends ProfileKey> = [key: T, val: NonNullable<Tables<'profiles'>[T]>]
+
+export const profileQuery = <T extends ProfileKey>(...[key, val]: ProfileArgs<T>) =>
+  supabase.from('profiles').select().eq(key, val).single()
+
 export type Profile = QueryData<ReturnType<typeof profileQuery>>
