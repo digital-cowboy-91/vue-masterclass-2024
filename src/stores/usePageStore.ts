@@ -1,4 +1,5 @@
-import { acceptHMRUpdate, defineStore } from 'pinia'
+import { handleHMR } from '@/utils/handleHMR'
+import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const usePageStore = defineStore('page-store', () => {
@@ -11,4 +12,4 @@ export const usePageStore = defineStore('page-store', () => {
   }
 })
 
-import.meta.hot?.accept(acceptHMRUpdate(usePageStore, import.meta.hot))
+handleHMR(usePageStore)
