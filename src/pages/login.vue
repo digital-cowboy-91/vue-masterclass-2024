@@ -4,13 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Input from '@/components/ui/input/Input.vue'
 import Label from '@/components/ui/label/Label.vue'
 import Separator from '@/components/ui/separator/Separator.vue'
-import { useFormErrors } from '@/composables/formErrors'
+import { useuseFormErrors } from '@/composables/useFormErrors'
 import { login } from '@/utils/dbAuth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const { serverError, handleServerError } = useFormErrors()
+const { serverError, handleServerError } = useuseFormErrors()
 
 const formData = ref({
   email: '',

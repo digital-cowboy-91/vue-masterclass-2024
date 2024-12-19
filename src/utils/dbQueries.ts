@@ -61,3 +61,8 @@ export const profileQuery = <T extends ProfileKey>(...[key, val]: ProfileArgs<T>
   supabase.from('profiles').select().eq(key, val).single()
 
 export type Profile = QueryData<ReturnType<typeof profileQuery>>
+
+export const collaboratorsQuery = async (userIds: string[]) =>
+  supabase.from('profiles').select('username, avatar_url, id, full_name').in('id', userIds)
+
+export type Collaborators = QueryData<ReturnType<typeof collaboratorsQuery>>
